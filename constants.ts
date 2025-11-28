@@ -11,11 +11,13 @@ export const CLEF_PATHS = {
 };
 
 // Map Levels
+// We provide Easy, Medium, Hard for each Clef
 export const LEVELS: LevelConfig[] = [
+  // --- TREBLE CLEF ---
   {
     id: 1,
-    name: "高音譜號入門 (Treble Basics)",
-    description: "學習高音譜號的基本音符 (中央C ~ G)。",
+    name: "高音入門 (Treble Easy)",
+    description: "基礎五線譜練習 (C4 - G4)",
     clef: ClefType.TREBLE,
     difficulty: "Easy",
     requiredScore: 80,
@@ -24,52 +26,118 @@ export const LEVELS: LevelConfig[] = [
   },
   {
     id: 2,
-    name: "高音譜號進階 (Treble Advanced)",
-    description: "挑戰更高的音域！",
+    name: "高音進階 (Treble Medium)",
+    description: "包含一個八度音域 (C4 - C5)",
     clef: ClefType.TREBLE,
     difficulty: "Medium",
-    requiredScore: 80,
-    totalQuestions: 10,
-    notesRange: { min: 0, max: 11 } // C4 to F5
+    requiredScore: 85,
+    totalQuestions: 12,
+    notesRange: { min: 0, max: 7 } // C4 to C5
   },
   {
     id: 3,
-    name: "低音譜號入門 (Bass Basics)",
-    description: "認識低沈的低音譜號。",
+    name: "高音大師 (Treble Hard)",
+    description: "挑戰更寬廣的音域 (G3 - G5)",
+    clef: ClefType.TREBLE,
+    difficulty: "Hard",
+    requiredScore: 90,
+    totalQuestions: 15,
+    notesRange: { min: -3, max: 11 } // G3 to G5
+  },
+
+  // --- BASS CLEF ---
+  {
+    id: 4,
+    name: "低音入門 (Bass Easy)",
+    description: "低音譜號基礎 (C3 - G3)",
     clef: ClefType.BASS,
     difficulty: "Easy",
     requiredScore: 80,
     totalQuestions: 10,
-    notesRange: { min: 0, max: 4 }
+    notesRange: { min: 0, max: 4 } // C3 to G3
   },
   {
-    id: 4,
-    name: "低音譜號大師 (Bass Master)",
-    description: "掌握低音譜號的所有音符。",
+    id: 5,
+    name: "低音進階 (Bass Medium)",
+    description: "擴展低音音域 (F2 - C4)",
     clef: ClefType.BASS,
     difficulty: "Medium",
     requiredScore: 85,
     totalQuestions: 12,
-    notesRange: { min: -7, max: 4 }
-  },
-  {
-    id: 5,
-    name: "中音譜號挑戰 (Alto Challenge)",
-    description: "中提琴手專用！C 在中間。",
-    clef: ClefType.ALTO,
-    difficulty: "Hard",
-    requiredScore: 90,
-    totalQuestions: 10,
-    notesRange: { min: -4, max: 4 }
+    notesRange: { min: -4, max: 7 } // F2 to C4
   },
   {
     id: 6,
-    name: "次中音譜號 (Tenor Clef)",
-    description: "大提琴高音區的秘密武器。",
+    name: "低音大師 (Bass Hard)",
+    description: "全方位低音挑戰 (E2 - E4)",
+    clef: ClefType.BASS,
+    difficulty: "Hard",
+    requiredScore: 90,
+    totalQuestions: 15,
+    notesRange: { min: -5, max: 9 } // E2 to E4
+  },
+
+  // --- ALTO CLEF ---
+  {
+    id: 7,
+    name: "中音入門 (Alto Easy)",
+    description: "認識中音譜號 (F3 - C4)",
+    clef: ClefType.ALTO,
+    difficulty: "Easy",
+    requiredScore: 80,
+    totalQuestions: 10,
+    notesRange: { min: -4, max: 0 } // F3 to C4
+  },
+  {
+    id: 8,
+    name: "中音進階 (Alto Medium)",
+    description: "中提琴音域練習 (C3 - C4)",
+    clef: ClefType.ALTO,
+    difficulty: "Medium",
+    requiredScore: 85,
+    totalQuestions: 12,
+    notesRange: { min: -7, max: 0 } // C3 to C4
+  },
+  {
+    id: 9,
+    name: "中音大師 (Alto Hard)",
+    description: "完整中音挑戰 (C3 - G4)",
+    clef: ClefType.ALTO,
+    difficulty: "Hard",
+    requiredScore: 90,
+    totalQuestions: 15,
+    notesRange: { min: -7, max: 4 } // C3 to G4
+  },
+
+  // --- TENOR CLEF ---
+  {
+    id: 10,
+    name: "次中音入門 (Tenor Easy)",
+    description: "大提琴高音區入門 (C3 - G3)",
+    clef: ClefType.TENOR,
+    difficulty: "Easy",
+    requiredScore: 80,
+    totalQuestions: 10,
+    notesRange: { min: -7, max: -3 } // C3 to G3
+  },
+  {
+    id: 11,
+    name: "次中音進階 (Tenor Medium)",
+    description: "更豐富的音域 (C3 - C4)",
+    clef: ClefType.TENOR,
+    difficulty: "Medium",
+    requiredScore: 85,
+    totalQuestions: 12,
+    notesRange: { min: -7, max: 0 } // C3 to C4
+  },
+  {
+    id: 12,
+    name: "次中音大師 (Tenor Hard)",
+    description: "專業級次中音譜號 (A2 - E4)",
     clef: ClefType.TENOR,
     difficulty: "Hard",
     requiredScore: 90,
-    totalQuestions: 10,
-    notesRange: { min: -4, max: 4 }
+    totalQuestions: 15,
+    notesRange: { min: -9, max: 2 } // A2 to E4
   }
 ];

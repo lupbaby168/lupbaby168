@@ -57,3 +57,42 @@ export const generateReward = async (
     };
   }
 };
+
+export const editDollImage = async (base64Data: string, prompt: string): Promise<string | null> => {
+  if (!apiKey) return null;
+
+  try {
+    // base64Data might include the prefix "data:image/png;base64,". We need to strip it.
+    const match = base64Data.match(/^data:(image\/[a-z]+);base64,(.+)$/);
+    const mimeType = match ? match[1] : 'image/png';
+    const data = match ? match[2] : base64Data;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: {
+        parts: [
+          {
+            inlineData: {
+              mimeType: mimeType,
+              data: data,
+            },
+          },
+          {
+            text: prompt,
+          },
+        ],
+      },
+    });
+
+    for (const part of response.candidates[0].content.parts) {
+      if (part.inlineData) {
+        return `data:image/png;base64,${part.inlineData.data}`;
+      }
+    }
+    return null;
+
+  } catch (error) {
+    console.error("Gemini Image Edit Error:", error);
+    return null;
+  }
+};

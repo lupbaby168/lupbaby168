@@ -8,6 +8,7 @@ import { generateReward } from './services/geminiService';
 const App: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>(GameState.MENU);
   const [currentLevel, setCurrentLevel] = useState<LevelConfig | null>(null);
+  const [selectedMenuClef, setSelectedMenuClef] = useState<ClefType>(ClefType.TREBLE);
   
   // Gameplay State
   const [currentNoteIndex, setCurrentNoteIndex] = useState<number>(0);
@@ -21,13 +22,7 @@ const App: React.FC = () => {
   const [rewardData, setRewardData] = useState<RewardData | null>(null);
   const [loadingReward, setLoadingReward] = useState(false);
 
-  // Sound effects (Simulated with simple oscillators if we wanted, but sticking to visual for React safety)
   // Logic to get note name from index
-  // Range Logic:
-  // Treble: 0 = C4. Sequence: C, D, E, F, G, A, B...
-  // Bass: 0 = C3. 
-  // We need to map currentNoteIndex (relative integer) to Note Name (String).
-  // C=0, D=1, E=2, F=3, G=4, A=5, B=6.
   const getNoteNameFromIndex = (idx: number) => {
     // Standardize: 0 is C.
     // Modulo 7 handles octaves.
@@ -108,52 +103,91 @@ const App: React.FC = () => {
     setLoadingReward(false);
   };
 
-  // Render Functions
-  const renderMenu = () => (
-    <div className="max-w-4xl mx-auto py-10 px-4">
-      <header className="text-center mb-12">
-        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mb-4">
-          樂理大冒險
-        </h1>
-        <p className="text-gray-600 text-lg">選擇關卡，收集可愛公仔，成為五線譜大師！</p>
-        <button 
-          onClick={() => setGameState(GameState.COLLECTION)}
-          className="mt-6 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition"
-        >
-          🏆 查看我的收藏 ({unlockedDolls.length})
-        </button>
-      </header>
+  const handleUpdateDoll = (id: string, newImageUrl: string) => {
+    setUnlockedDolls(prev => prev.map(d => d.id === id ? { ...d, imageUrl: newImageUrl } : d));
+  };
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {LEVELS.map(level => (
-          <div key={level.id} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
-            <div className={`h-3 w-full ${
-              level.difficulty === 'Easy' ? 'bg-green-400' : 
-              level.difficulty === 'Medium' ? 'bg-orange-400' : 'bg-red-500'
-            }`} />
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-500">
-                  {level.difficulty}
-                </span>
-                <span className="text-xs font-bold text-indigo-500">
-                  {level.clef}
-                </span>
+  // Render Functions
+  const renderMenu = () => {
+    const clefs = [
+      { type: ClefType.TREBLE, label: '高音譜號' },
+      { type: ClefType.BASS, label: '低音譜號' },
+      { type: ClefType.ALTO, label: '中音譜號' },
+      { type: ClefType.TENOR, label: '次中音譜號' },
+    ];
+
+    const filteredLevels = LEVELS.filter(l => l.clef === selectedMenuClef);
+
+    return (
+      <div className="max-w-4xl mx-auto py-10 px-4">
+        <header className="text-center mb-10">
+          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mb-4">
+            樂理大冒險
+          </h1>
+          <p className="text-gray-600 text-lg">選擇譜號與難度，收集可愛公仔，成為五線譜大師！</p>
+          <button 
+            onClick={() => setGameState(GameState.COLLECTION)}
+            className="mt-6 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition"
+          >
+            🏆 查看我的收藏 ({unlockedDolls.length})
+          </button>
+        </header>
+
+        {/* Clef Selection Tabs */}
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          {clefs.map((c) => (
+            <button
+              key={c.type}
+              onClick={() => setSelectedMenuClef(c.type)}
+              className={`px-6 py-3 rounded-full font-bold transition-all shadow-sm ${
+                selectedMenuClef === c.type
+                  ? 'bg-indigo-600 text-white scale-105 shadow-indigo-200 shadow-lg'
+                  : 'bg-white text-gray-500 hover:bg-gray-50'
+              }`}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Levels Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up">
+          {filteredLevels.map(level => (
+            <div key={level.id} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 flex flex-col">
+              <div className={`h-3 w-full ${
+                level.difficulty === 'Easy' ? 'bg-green-400' : 
+                level.difficulty === 'Medium' ? 'bg-orange-400' : 'bg-red-500'
+              }`} />
+              <div className="p-6 flex flex-col flex-1">
+                <div className="flex justify-between items-start mb-4">
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+                     level.difficulty === 'Easy' ? 'bg-green-100 text-green-700' : 
+                     level.difficulty === 'Medium' ? 'bg-orange-100 text-orange-700' : 'bg-red-100 text-red-700'
+                  }`}>
+                    {level.difficulty}
+                  </span>
+                  <span className="text-xs font-bold text-gray-400">
+                    {level.notesRange.max - level.notesRange.min + 1} 個音符
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">{level.name.split('(')[0]}</h3>
+                <p className="text-gray-500 text-sm mb-6 flex-1">{level.description}</p>
+                <button 
+                  onClick={() => startGame(level)}
+                  className={`w-full font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-white ${
+                    level.difficulty === 'Easy' ? 'bg-green-500 hover:bg-green-600' : 
+                    level.difficulty === 'Medium' ? 'bg-orange-500 hover:bg-orange-600' : 'bg-red-500 hover:bg-red-600'
+                  }`}
+                >
+                  開始挑戰 ▶
+                </button>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">{level.name}</h3>
-              <p className="text-gray-500 text-sm mb-6">{level.description}</p>
-              <button 
-                onClick={() => startGame(level)}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2"
-              >
-                開始挑戰 ▶
-              </button>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderGame = () => (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-slate-50">
@@ -303,7 +337,7 @@ const App: React.FC = () => {
       {gameState === GameState.PLAYING && renderGame()}
       {gameState === GameState.LEVEL_COMPLETE && renderLevelComplete()}
       {gameState === GameState.COLLECTION && (
-        <Collection dolls={unlockedDolls} onBack={() => setGameState(GameState.MENU)} />
+        <Collection dolls={unlockedDolls} onBack={() => setGameState(GameState.MENU)} onUpdateDoll={handleUpdateDoll} />
       )}
     </div>
   );
