@@ -16,7 +16,7 @@ export const generateReward = async (
     // Fallback if no API key is present
     return {
       nickname: "小小音樂家",
-      funFact: "你知道嗎？五線譜最早起源於中世紀的紐姆記譜法喔！"
+      funFact: "你知道嗎？五線譜最早起源於中世紀的紐姆記譜法喔！那時候的豆芽菜長得跟現在不太一樣，經過了好幾百年才演變成我們現在看到的樣子呢！"
     };
   }
 
@@ -29,7 +29,7 @@ export const generateReward = async (
         
         Generate a JSON response with:
         1. "nickname": A fun, encouraging, music-related nickname for them (in Traditional Chinese). e.g., "高音王子", "節奏大師", "小小莫札特".
-        2. "funFact": A very short, interesting fact about the ${clef} clef or general music theory suitable for a primary school student (in Traditional Chinese).
+        2. "funFact": An engaging and slightly longer fun fact (2-3 sentences) about the ${clef} clef, instruments that read it, or general music theory. Write it in Traditional Chinese for a primary school student. Make it sound exciting, like a secret tip or a cool story!
       `,
       config: {
         responseMimeType: "application/json",
@@ -53,7 +53,7 @@ export const generateReward = async (
     console.error("Gemini API Error:", error);
     return {
       nickname: "超級音樂學徒",
-      funFact: "熟能生巧！每天練習五線譜，看譜速度會越來越快喔！"
+      funFact: "熟能生巧！每天練習五線譜，看譜速度會越來越快喔！音樂就像魔法語言，學會了就能聽懂作曲家想說的故事呢！"
     };
   }
 };
